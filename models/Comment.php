@@ -5,25 +5,24 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "post".
+ * This is the model class for table "comment".
  *
  * @property int $id
  * @property string $c_text
+ * @property int $r_post
  * @property int $r_user
  *
- * @property Comment[] $comments
- * @property Likes[] $likes
+ * @property Post $rPost
  * @property Users $rUser
- * @property PostImage[] $postImages
  */
-class Post extends \yii\db\ActiveRecord
+class Comment extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'post';
+        return 'comment';
     }
 
     /**
@@ -32,9 +31,10 @@ class Post extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['c_text', 'r_user'], 'required'],
+            [['c_text', 'r_post', 'r_user'], 'required'],
             [['c_text'], 'string'],
-            [['r_user'], 'integer'],
+            [['r_post', 'r_user'], 'integer'],
+            [['r_post'], 'exist', 'skipOnError' => true, 'targetClass' => Post::className(), 'targetAttribute' => ['r_post' => 'id']],
             [['r_user'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['r_user' => 'id']],
         ];
     }
@@ -47,6 +47,7 @@ class Post extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('app', 'ID'),
             'c_text' => Yii::t('app', 'C Text'),
+            'r_post' => Yii::t('app', 'R Post'),
             'r_user' => Yii::t('app', 'R User'),
         ];
     }
@@ -54,17 +55,9 @@ class Post extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getComments()
+    public function getRPost()
     {
-        return $this->hasMany(Comment::className(), ['r_post' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLikes()
-    {
-        return $this->hasMany(Likes::className(), ['r_post' => 'id']);
+        return $this->hasOne(Post::className(), ['id' => 'r_post']);
     }
 
     /**
@@ -73,13 +66,5 @@ class Post extends \yii\db\ActiveRecord
     public function getRUser()
     {
         return $this->hasOne(Users::className(), ['id' => 'r_user']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPostImages()
-    {
-        return $this->hasMany(PostImage::className(), ['r_post' => 'id']);
     }
 }

@@ -2,7 +2,7 @@
 
 return [
     'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=localhost;dbname=wen_arkhas',
+    'dsn' => 'mysql:host=localhost;dbname=group',
     'username' => 'root',
     'password' => '',
     'charset' => 'utf8',
