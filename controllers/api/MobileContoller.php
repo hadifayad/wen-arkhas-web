@@ -28,3 +28,5 @@ class MobileController extends ApiController {
             return true;
         }
     }
+
+}
