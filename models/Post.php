@@ -10,11 +10,11 @@ use Yii;
  * @property int $id
  * @property string $c_text
  * @property int $r_user
+ * @property string|null $image
  *
  * @property Comment[] $comments
  * @property Likes[] $likes
  * @property Users $rUser
- * @property PostImage[] $postImages
  */
 class Post extends \yii\db\ActiveRecord
 {
@@ -35,6 +35,7 @@ class Post extends \yii\db\ActiveRecord
             [['c_text', 'r_user'], 'required'],
             [['c_text'], 'string'],
             [['r_user'], 'integer'],
+            [['image'], 'string', 'max' => 2000],
             [['r_user'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['r_user' => 'id']],
         ];
     }
@@ -45,13 +46,16 @@ class Post extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('app', 'ID'),
-            'c_text' => Yii::t('app', 'C Text'),
-            'r_user' => Yii::t('app', 'R User'),
+            'id' => 'ID',
+            'c_text' => 'C Text',
+            'r_user' => 'R User',
+            'image' => 'Image',
         ];
     }
 
     /**
+     * Gets query for [[Comments]].
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getComments()
@@ -60,6 +64,8 @@ class Post extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[Likes]].
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getLikes()
@@ -68,18 +74,12 @@ class Post extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[RUser]].
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getRUser()
     {
         return $this->hasOne(Users::className(), ['id' => 'r_user']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPostImages()
-    {
-        return $this->hasMany(PostImage::className(), ['r_post' => 'id']);
     }
 }
