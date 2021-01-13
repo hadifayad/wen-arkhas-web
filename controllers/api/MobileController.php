@@ -80,7 +80,8 @@ class MobileController extends ApiController {
         $user->email = $email;
         if ($user->save()) {
             return true;
-        }
+        } else
+            return $user->errors;
     }
 
 }
