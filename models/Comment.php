@@ -11,6 +11,7 @@ use Yii;
  * @property string $c_text
  * @property int $r_post
  * @property int $r_user
+ * @property string $creation_date
  *
  * @property Post $rPost
  * @property Users $rUser
@@ -34,6 +35,7 @@ class Comment extends \yii\db\ActiveRecord
             [['c_text', 'r_post', 'r_user'], 'required'],
             [['c_text'], 'string'],
             [['r_post', 'r_user'], 'integer'],
+            [['creation_date'], 'safe'],
             [['r_post'], 'exist', 'skipOnError' => true, 'targetClass' => Post::className(), 'targetAttribute' => ['r_post' => 'id']],
             [['r_user'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['r_user' => 'id']],
         ];
@@ -45,14 +47,17 @@ class Comment extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('app', 'ID'),
-            'c_text' => Yii::t('app', 'C Text'),
-            'r_post' => Yii::t('app', 'R Post'),
-            'r_user' => Yii::t('app', 'R User'),
+            'id' => 'ID',
+            'c_text' => 'C Text',
+            'r_post' => 'R Post',
+            'r_user' => 'R User',
+            'creation_date' => 'Creation Date',
         ];
     }
 
     /**
+     * Gets query for [[RPost]].
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getRPost()
@@ -61,6 +66,8 @@ class Comment extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[RUser]].
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getRUser()
