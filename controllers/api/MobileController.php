@@ -14,7 +14,7 @@ class MobileController extends ApiController {
         $post = Yii::$app->request->post();
         $text = $post["text"];
         $image = $post["image"];
-        $user = 1;
+        $user = $post["userID"];
 
         $post = new Post();
         $post->r_user = $user;
@@ -107,17 +107,17 @@ class MobileController extends ApiController {
     public function actionGetCommentsByPost() {
         $post = Yii::$app->request->post();
         $postId = $post["postId"];
-        
+
         $commentsByPost = (new Query)
-                ->select(Comment::tableName().".*,users.fullname")
+                ->select(Comment::tableName() . ".*,users.fullname")
                 ->from(Comment::tableName())
                 ->where([
                     "r_post" => $postId
                 ])
-                ->join("join", "users", Comment::tableName().".r_user = users.id")
+                ->join("join", "users", Comment::tableName() . ".r_user = users.id")
                 ->orderBy("creation_date Desc")
                 ->all();
-        
+
         return $commentsByPost;
     }
 
