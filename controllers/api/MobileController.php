@@ -14,7 +14,7 @@ class MobileController extends ApiController {
         $post = Yii::$app->request->post();
         $text = $post["text"];
         $image = $post["image"];
-        $user = $post["userID"];
+        $user = $post["userId"];
 
         $post = new Post();
         $post->r_user = $user;
