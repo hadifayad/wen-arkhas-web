@@ -81,7 +81,23 @@ class MobileController extends ApiController {
         if ($user->save()) {
             return true;
         } else
-            return $user->errors;
+            return false;
+    }
+
+    public function actionLogin() {
+        $post = Yii::$app->request->post();
+
+        $password = $post["password"];
+        $username = $post["username"];
+
+        $user = \app\models\Users::find()
+                ->where(['username' => $username])
+                ->andWhere(['password' => $password])
+                ->one();
+        if ($user)
+            return $user;
+        else
+            return false;
     }
 
 }
