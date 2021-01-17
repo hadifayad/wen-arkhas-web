@@ -2,8 +2,11 @@
 
 namespace app\controllers\api;
 
+use app\models\Comment;
 use app\models\Post;
+use app\models\Users;
 use Yii;
+use yii\db\Query;
 
 class MobileController extends ApiController {
 
@@ -11,7 +14,7 @@ class MobileController extends ApiController {
         $post = Yii::$app->request->post();
         $text = $post["text"];
         $image = $post["image"];
-        $user = 1;
+        $user = $post["userID"];
 
         $post = new Post();
         $post->r_user = $user;
@@ -43,7 +46,7 @@ class MobileController extends ApiController {
                 $post2 = Post::findOne(["id" => $post->primaryKey]);
                 $post2->image = $imageName;
                 if ($post2->save()) {
-
+                    
                 } else {
                     return $post2->errors;
                 }
@@ -72,7 +75,7 @@ class MobileController extends ApiController {
         $password = $post["password"];
         $username = $post["username"];
 
-        $user = new \app\models\Users();
+        $user = new Users();
         $user->username = $username;
         $user->fullname = $fullname;
         $user->c_phone = $c_phone;
@@ -98,6 +101,40 @@ class MobileController extends ApiController {
             return $user;
         else
             return false;
+    }
+
+    public function actionAddComment() {
+        $post = Yii::$app->request->post();
+        $postId = $post["postId"];
+        $text = $post["text"];
+        $userId = $post["userId"];
+
+        $comment = new Comment();
+        $comment->r_post = $postId;
+        $comment->r_user = $userId;
+        $comment->c_text = $text;
+        if ($comment->save()) {
+            return "true";
+        } else {
+            return "false";
+        }
+    }
+
+    public function actionGetCommentsByPost() {
+        $post = Yii::$app->request->post();
+        $postId = $post["postId"];
+
+        $commentsByPost = (new Query)
+                ->select(Comment::tableName() . ".*,users.fullname")
+                ->from(Comment::tableName())
+                ->where([
+                    "r_post" => $postId
+                ])
+                ->join("join", "users", Comment::tableName() . ".r_user = users.id")
+                ->orderBy("creation_date Desc")
+                ->all();
+
+        return $commentsByPost;
     }
 
 }
